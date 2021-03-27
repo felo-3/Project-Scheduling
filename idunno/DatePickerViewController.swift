@@ -10,60 +10,85 @@ import UIKit
 
 class DatePickerViewController: UIViewController {
 
-    @IBOutlet weak var lockFin: UISwitch!
-    @IBOutlet weak var lockStart: UISwitch!
-    @IBOutlet weak var numDatelock: UISwitch!
+    @IBOutlet weak var startNFinSwitch: UISegmentedControl!
+    
+    @IBOutlet weak var firstLabel: UILabel!
+    @IBOutlet weak var secondLabel: UILabel!
     
     @IBOutlet weak var startDatePicker: UIDatePicker!
     @IBOutlet weak var finDatePicker: UIDatePicker!
     
     @IBOutlet weak var numDays: UITextField!
     
-    @IBOutlet weak var wkDays: UISegmentedControl!
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       // finDatePicker.isUserInteractionEnabled = false
         // Do any additional setup after loading the view.
     }
     
-
-    @IBAction func startDate(_ sender: Any) {
-    }
-    
-    @IBAction func finDate(_ sender: Any) {
-        if lockStart.isOn && numDatelock.isOn{
-            if numDays != nil && numDays.text != ""{
-                    var dateComponent = DateComponents()
-                    dateComponent.day = Int(numDays.text!)
-                    finDatePicker.date = Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!
+    @IBAction func findDays(sender: Any){
+        if startNFinSwitch.selectedSegmentIndex == 2{
+            if startDatePicker != nil && finDatePicker != nil{
+                if startDatePicker.date < finDatePicker.date {
+                    numDays.text = String(Calendar.current.dateComponents([.day], from: startDatePicker.date, to: finDatePicker.date).day!)
+                }
             }
         }
     }
     
-    @IBAction func startDateLock(_ sender: UISwitch) {
-        if lockStart.isOn{
-            startDatePicker.isUserInteractionEnabled = false
-        }else{
-            startDatePicker.isUserInteractionEnabled = true
+    @IBAction func textChanged(_ sender: Any) {
+        changeFinDate((Any).self);
+        changeStartDate((Any).self);
+    }
+
+    @IBAction func changeStartDate(_ sender: Any) {
+        if startNFinSwitch.selectedSegmentIndex == 0{
+                if numDays != nil && numDays.text != "" {
+                        var dateComponent = DateComponents()
+                        dateComponent.day = Int(numDays.text!)
+                    finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
+            }
         }
     }
     
-    @IBAction func finDateLocked(_ sender: UISwitch) {
-        if lockFin.isOn{
-            finDatePicker.isUserInteractionEnabled = false
-        } else{
-            finDatePicker.isUserInteractionEnabled = true
+    @IBAction func changeFinDate(_ sender: Any) {
+        if startNFinSwitch.selectedSegmentIndex == 1{
+            if numDays != nil && numDays.text != "" {
+                    var dateComponent = DateComponents()
+                dateComponent.day = Int(numDays.text!)! * -1
+                finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
+        }
+        }
+
+    }
+    
+    @IBAction func changeMode(_ sender: UISegmentedControl){
+        if sender.selectedSegmentIndex == 0{
+            firstLabel.text = "START DATE"
+            secondLabel.text = "FINISH DATE"
+            numDays.text = ""
+            
+          
+        } else if sender.selectedSegmentIndex == 1{
+            firstLabel.text = "FINISH DATE"
+            secondLabel.text = "START DATE"
+            numDays.text = ""
+          
+        }else if sender.selectedSegmentIndex == 2{
+         //   numDays.isEnabled = false
         }
     }
     
-    @IBAction func lockNumDate(_ sender: UISwitch) {
-        if numDatelock.isOn{
-            numDays.isUserInteractionEnabled = false
-        } else{
-            numDays.isUserInteractionEnabled = true
-        }
-    }
+//    @IBAction func finDate(_ sender: Any) {
+//            if numDays != nil && numDays.text != ""{
+//                    var dateComponent = DateComponents()
+//                    dateComponent.day = Int(numDays.text!)
+//                finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
+//        }
+//    }
+    
     
     /*
     // MARK: - Navigation
