@@ -26,13 +26,21 @@ class DatePickerViewController: UIViewController {
         super.viewDidLoad()
        // finDatePicker.isUserInteractionEnabled = false
         // Do any additional setup after loading the view.
+
     }
     
     @IBAction func findDays(sender: Any){
-        if startNFinSwitch.selectedSegmentIndex == 2{
+        if startNFinSwitch.selectedSegmentIndex == 2 {
+            finDatePicker.minimumDate = startDatePicker.date
             if startDatePicker != nil && finDatePicker != nil{
-                if startDatePicker.date < finDatePicker.date {
-                    numDays.text = String(Calendar.current.dateComponents([.day], from: startDatePicker.date, to: finDatePicker.date).day!)
+                if startDatePicker.date <= finDatePicker.date {
+                    var numWKs = Calendar.current.dateComponents([.day], from: startDatePicker.date, to: finDatePicker.date).day!
+                    numWKs/=7
+                    if (numWKs > 0) {
+                        numDays.text = String(numWKs)
+                    } else {
+                        numDays.text = String(numWKs%7) + " days"
+                    }
                 }
             }
         }
@@ -45,21 +53,35 @@ class DatePickerViewController: UIViewController {
 
     @IBAction func changeStartDate(_ sender: Any) {
         if startNFinSwitch.selectedSegmentIndex == 0{
+            startDatePicker.maximumDate = finDatePicker.date
                 if numDays != nil && numDays.text != "" {
+                    startDatePicker.maximumDate = finDatePicker.date
                         var dateComponent = DateComponents()
-                        dateComponent.day = Int(numDays.text!)
+                    dateComponent.day = Int(numDays.text!)!*7
                     finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
-            }
+                } else {
+                               finDatePicker.date = startDatePicker.date
+                               
+                }
         }
     }
     
     @IBAction func changeFinDate(_ sender: Any) {
         if startNFinSwitch.selectedSegmentIndex == 1{
+            
+//            if(startDatePicker.date < finDatePicker.date){
+//                startDatePicker.date = finDatePicker.date
+//            }
+            
+            startDatePicker.minimumDate = finDatePicker.date
             if numDays != nil && numDays.text != "" {
                     var dateComponent = DateComponents()
-                dateComponent.day = Int(numDays.text!)! * -1
+                dateComponent.day = Int(numDays.text!)! * -7
                 finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
-        }
+            } else {
+                finDatePicker.date = startDatePicker.date
+                
+            }
         }
 
     }
@@ -70,14 +92,48 @@ class DatePickerViewController: UIViewController {
             secondLabel.text = "FINISH DATE"
             numDays.text = ""
             
+            startDatePicker.setDate(Date(),animated: false)
+            finDatePicker.setDate(Date(),animated: false)
+            numDays.isUserInteractionEnabled = true
+//            finDatePicker.isUserInteractionEnabled = false
+//            print("0")
+//            if finDatePicker.isUserInteractionEnabled == true{
+//                           print("F")
+//                       }else{
+//                           print ("T")
+//                       }
           
-        } else if sender.selectedSegmentIndex == 1{
+        }
+        if sender.selectedSegmentIndex == 1 {
             firstLabel.text = "FINISH DATE"
             secondLabel.text = "START DATE"
             numDays.text = ""
-          
-        }else if sender.selectedSegmentIndex == 2{
+            
+            startDatePicker.setDate(Date(),animated: false)
+            finDatePicker.setDate(Date(),animated: false)
+            numDays.isUserInteractionEnabled = true
+//            finDatePicker.isEnabled = false
+//            print("1")
+//            if finDatePicker.isUserInteractionEnabled == false{
+//                           print("F")
+//                       }else{
+//                           print ("T")
+//                       }
+//
+        }
+        if sender.selectedSegmentIndex == 2 {
          //   numDays.isEnabled = false
+            numDays.text = ""
+            startDatePicker.setDate(Date(),animated: false)
+            finDatePicker.setDate(Date(),animated: false)
+            numDays.isUserInteractionEnabled = false
+//            finDatePicker.isEnabled = true
+//            print ("2")
+//            if finDatePicker.isUserInteractionEnabled == false{
+//                print("F")
+//            }else{
+//                print ("T")
+//            }
         }
     }
     
