@@ -54,8 +54,8 @@ class DatePickerViewController: UIViewController {
     @IBAction func changeStartDate(_ sender: Any) {
         if startNFinSwitch.selectedSegmentIndex == 0{
             startDatePicker.maximumDate = finDatePicker.date
+            finDatePicker.minimumDate = startDatePicker.date 
                 if numDays != nil && numDays.text != "" {
-                    startDatePicker.maximumDate = finDatePicker.date
                         var dateComponent = DateComponents()
                     dateComponent.day = Int(numDays.text!)!*7
                     finDatePicker.setDate((Calendar.current.date(byAdding: dateComponent, to: startDatePicker.date)!), animated: true)
@@ -68,11 +68,6 @@ class DatePickerViewController: UIViewController {
     
     @IBAction func changeFinDate(_ sender: Any) {
         if startNFinSwitch.selectedSegmentIndex == 1{
-            
-//            if(startDatePicker.date < finDatePicker.date){
-//                startDatePicker.date = finDatePicker.date
-//            }
-            
             startDatePicker.minimumDate = finDatePicker.date
             if numDays != nil && numDays.text != "" {
                     var dateComponent = DateComponents()
@@ -88,13 +83,16 @@ class DatePickerViewController: UIViewController {
     
     @IBAction func changeMode(_ sender: UISegmentedControl){
         if sender.selectedSegmentIndex == 0{
+            startDatePicker.minimumDate = nil
+            startDatePicker.maximumDate = nil
+            
             firstLabel.text = "START DATE"
             secondLabel.text = "FINISH DATE"
             numDays.text = ""
             
             startDatePicker.setDate(Date(),animated: false)
             finDatePicker.setDate(Date(),animated: false)
-            numDays.isUserInteractionEnabled = true
+//            numDays.isUserInteractionEnabled = true
 //            finDatePicker.isUserInteractionEnabled = false
 //            print("0")
 //            if finDatePicker.isUserInteractionEnabled == true{
@@ -105,13 +103,16 @@ class DatePickerViewController: UIViewController {
           
         }
         if sender.selectedSegmentIndex == 1 {
+            startDatePicker.minimumDate = nil
+            startDatePicker.maximumDate = nil
+            
             firstLabel.text = "FINISH DATE"
             secondLabel.text = "START DATE"
             numDays.text = ""
             
             startDatePicker.setDate(Date(),animated: false)
             finDatePicker.setDate(Date(),animated: false)
-            numDays.isUserInteractionEnabled = true
+//            numDays.isUserInteractionEnabled = true
 //            finDatePicker.isEnabled = false
 //            print("1")
 //            if finDatePicker.isUserInteractionEnabled == false{
@@ -122,11 +123,14 @@ class DatePickerViewController: UIViewController {
 //
         }
         if sender.selectedSegmentIndex == 2 {
-         //   numDays.isEnabled = false
+            startDatePicker.minimumDate = nil
+            startDatePicker.maximumDate = nil
+            
             numDays.text = ""
             startDatePicker.setDate(Date(),animated: false)
             finDatePicker.setDate(Date(),animated: false)
-            numDays.isUserInteractionEnabled = false
+//            numDays.isUserInteractionEnabled = false
+            finDatePicker.minimumDate = startDatePicker.date
 //            finDatePicker.isEnabled = true
 //            print ("2")
 //            if finDatePicker.isUserInteractionEnabled == false{
